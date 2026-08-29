@@ -1,0 +1,23 @@
+info:
+  name: POST BOOK
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: http://localhost:3000/books
+  body:
+    type: json
+    data: |-
+      {
+        "title": "Garpolek",
+        "author": "Aldo Y.F"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

@@ -1,5 +1,6 @@
 const express = require('express');
 const { loadBooks, addBook, findBook, updateBook, deleteBook, } = require('./utils/books');
+const pool = require('./db');
 
 const app = express();
 const port = 3000;
@@ -17,27 +18,57 @@ app.param('id', (req, res, next, id) => {
 
   req.params.id = numericId;
   next();
-})
-
-app.get('/books', (req, res) => {
-  const books = loadBooks();
-  res.json(books)
 });
 
-app.get('/books/:id', (req, res) => {
-  const book = findBook(req.params.id)
-  console.log(book)
-  res.json(book);
+app.get('/books', async(req, res) => {
+  const books = await pool.query('SELECT * FROM books');
+
+  return res.json({
+    status: 'success',
+    data: books.rows
+  })
+});
+
+app.get('/books/:id', async (req, res) => {
+  const result = await pool.query(
+    `SELECT * FROM books where id = $1`,
+    [req.params.id]
+  );
+
+  if (result.rows.length === 0) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Buku Tidak ditemukan'
+    });
+  }
+
+  res.json({
+    status: 'success',
+    data : result.rows[0]
+  });
 })
 
-app.post('/books', (req, res) => {
+app.post('/books', async (req, res) => {
   try {
-    const createdBook = addBook(req.body);
+    const {code, title, author, publisher, published_year, synopsis, total_copies, cover_url
+    } = req.body;
+    const result = await pool.query(`INSERT INTO books(
+    code,
+    title,
+    author,
+    publisher,
+    published_year,
+    synopsis,
+    total_copies,
+    cover_url)
+    VALUES($1, $2, $3, $4, $5, $6, $7, $8)
+    RETURNING *;`,
+    [code, title, author, publisher, published_year, synopsis, total_copies, cover_url]);
 
     return res.status(201).json({
       status: 'success',
       message: 'Buku berhasil ditambahkan',
-      data: createdBook
+      data: result.rows[0]
     });
   } catch (error) {
     return res.status(400).json({

@@ -5,17 +5,17 @@ info:
 
 http:
   method: POST
-  url: http://localhost:3000/books
+  url: http://localhost:8000/books
   body:
     type: json
     data: |-
       {
-        "code": "BK-0003",
-        "title": "Clean Code",
-        "author": "Robert C. Martin",
-        "publisher": "Prentice Hall",
-        "published_year": 2008,
-        "synopsis": "A book about writing cleaner software.",
+        "code": "BK-0005",
+        "title": "aldo",
+        "author": "Noordin M. Top",
+        "publisher": "DPR",
+        "published_year": "abc",
+        "synopsis": "Ingat! darah keturunan diktator akan tetap mengalir ke anak mantunya dan dia akan tetap menjadi tiran! bohong kalau tidak.",
         "total_copies": 5,
         "cover_url": null
       }

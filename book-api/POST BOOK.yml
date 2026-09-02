@@ -5,19 +5,19 @@ info:
 
 http:
   method: POST
-  url: http://localhost:8000/books
+  url: http://localhost:3000/books
   body:
     type: json
     data: |-
       {
-        "code": "BK-0005",
-        "title": "aldo",
-        "author": "Noordin M. Top",
-        "publisher": "DPR",
-        "published_year": "abc",
-        "synopsis": "Ingat! darah keturunan diktator akan tetap mengalir ke anak mantunya dan dia akan tetap menjadi tiran! bohong kalau tidak.",
-        "total_copies": 5,
-        "cover_url": null
+        "code": "BK-0006",
+        "title": "How To Fish",
+        "author": "Atid Sumarno",
+        "publisher": "Mancing mania",
+        "published_year": "2021",
+        "synopsis": "",
+        "total_copies": "10",
+        "cover_url": ""
       }
   auth: inherit
 

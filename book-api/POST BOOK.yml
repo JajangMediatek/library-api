@@ -10,14 +10,14 @@ http:
     type: json
     data: |-
       {
-        "code": "BK-0006",
+        "code": "BK-0015",
         "title": "How To Fish",
         "author": "Atid Sumarno",
         "publisher": "Mancing mania",
         "published_year": "2021",
         "synopsis": "",
         "total_copies": "10",
-        "cover_url": ""
+        "cover_url": "http://localhost:3000/books"
       }
   auth: inherit
 

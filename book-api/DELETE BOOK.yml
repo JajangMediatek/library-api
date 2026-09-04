@@ -8,7 +8,7 @@ http:
   url: http://localhost:3000/books/:id
   params:
     - name: id
-      value: "7"
+      value: "14"
       type: path
   auth: inherit
 

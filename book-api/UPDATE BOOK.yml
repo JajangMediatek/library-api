@@ -15,7 +15,9 @@ http:
     data: |-
       {
         "title": "Test",
-        "author": "GFROSsss"
+        "author": "GFROSsss",
+        "id": 1,
+        "code": "BK-0002"
       }
   auth: inherit
 

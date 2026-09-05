@@ -92,6 +92,14 @@ const updateBook = async (req, res, next) => {
     'total_copies',
     'cover_url'
   ];
+  const invalidFields = Object.keys(updates).filter((key) => !allowedFields.includes(key));
+  if (invalidFields.length > 0) {
+    return res.status(400).json({
+      status: 'fail',
+      message: `Field ${invalidFields.join(', ')} tidak diizinkan`
+    });
+  }
+
   const keys = Object.keys(updates).filter(key => allowedFields.includes(key));
 
   if (keys.length === 0) {

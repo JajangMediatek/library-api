@@ -153,7 +153,7 @@ const deleteBook = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       status: 'fail',
-      message: err.message
+      message: error.message
     });
   }
 };

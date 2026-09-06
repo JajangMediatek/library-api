@@ -2,37 +2,57 @@ const { checkSchema, body, checkExact } = require("express-validator");
 
 const createBookValidation =checkExact(checkSchema({
   code: {
-    trim: true,
-    isString: {
-      errorMessage: "Field Code harus berupa String"
+    custom: {
+      options: (value) => {
+        if (typeof value !== 'string') {
+          throw new Error('Field code harus berupa string')
+        }
+        return true;
+      }
     },
+    trim: true,
     notEmpty: {
       errorMessage: "Field Code wajib diisi"
     },
   },
   title: {
-    trim: true,
-    isString: {
-  errorMessage: "Field Judul harus berupa String"
+    custom: {
+      options: (value) => {
+        if (typeof value !== 'string') {
+          throw new Error('Field title harus berupa string')
+        }
+        return true;
+      }
     },
+    trim: true,
     notEmpty: {
       errorMessage: "Field Judul Wajib diiisi"
     },
   },
   author: {
-    trim: true,
-    isString: {
-      errorMessage: "Field author harus berupa String"
+    custom: {
+      options: (value) => {
+        if (typeof value !== 'string') {
+          throw new Error('Field author harus berupa string')
+        }
+          return true;
+      }
     },
+    trim: true,
     notEmpty: {
       errorMessage: "Field author wajib diisi"
     },
   },
   publisher: {
+    custom: {
+      options: (value) => {
+        if (typeof value !== 'string') {
+          throw new Error('Field publisher harus berupa string')
+        }
+        return true;
+      }
+    },
     trim: true,
-      isString: {
-        errorMessage: "Field publisher harus berupa String"
-      },
       notEmpty: {
         errorMessage: "Field publisher wajib diisi"
     }
@@ -56,10 +76,15 @@ const createBookValidation =checkExact(checkSchema({
     }
   },
   synopsis: {
-    trim: true,
-    isString: {
-      errorMessage: "Field sinopsis harus berupa String"
+    custom: {
+      options: (value) => {
+        if (typeof value !== 'string') {
+          throw new Error('Field synopsis harus berupa string')
+        }
+        return true;
+      }
     },
+    trim: true,
     optional: true
   },
   total_copies: {
@@ -73,43 +98,68 @@ const createBookValidation =checkExact(checkSchema({
   },
   cover_url: {
     optional: true,
-    isString: {
-      errorMessage: "url tidak valid"
-    },
+    isURL: {
+      options: {
+        protocols: ['http', 'https'],
+        require_protocol: true,
+        require_tld: false
+      },
+      errorMessage: "URL tidak valid"
+    }
   }
 
 }), {
+  message: "Terdapat Field yang tidak diizinkan",
   locations: ['body'],
-  message: "Terdapat Field yang tidak diizinkan"
 });
 
 const updateBookValidation = checkExact(checkSchema({
   code: {
-    trim: true,
-    isString: {
-      errorMessage: "Field Code harus berupa String"
+    custom: {
+      options: (value) => {
+        if (typeof value !== 'string') {
+          throw new Error('Field synopsis harus berupa string')
+        }
+        return true;
+      }
     },
+    trim: true,
     optional: true
   },
   title: {
-    trim: true,
-    isString: {
-  errorMessage: "Field Judul harus berupa String"
+    custom: {
+      options: (value) => {
+        if (typeof value !== 'string') {
+          throw new Error('Field synopsis harus berupa string')
+        }
+        return true;
+      }
     },
+    trim: true,
     optional: true
   },
   author: {
-    trim: true,
-    isString: {
-      errorMessage: "Field author harus berupa String"
+    custom: {
+      options: (value) => {
+        if (typeof value !== 'string') {
+          throw new Error('Field synopsis harus berupa string')
+        }
+        return true;
+      }
     },
+    trim: true,
     optional: true
   },
   publisher: {
-    trim: true,
-      isString: {
-        errorMessage: "Field publisher harus berupa String"
+    custom: {
+      options: (value) => {
+        if (typeof value !== 'string') {
+          throw new Error('Field synopsis harus berupa string')
+        }
+        return true;
+      }
     },
+    trim: true,
       optional: true
   },
   published_year: {
@@ -129,10 +179,15 @@ const updateBookValidation = checkExact(checkSchema({
     }
   },
   synopsis: {
-    trim: true,
-    isString: {
-      errorMessage: "Field sinopsis harus berupa String"
+    custom: {
+      options: (value) => {
+        if (typeof value !== 'string') {
+          throw new Error('Field synopsis harus berupa string')
+        }
+        return true;
+      }
     },
+    trim: true,
     optional: true
   },
   total_copies: {
@@ -144,9 +199,14 @@ const updateBookValidation = checkExact(checkSchema({
   },
   cover_url: {
     optional: true,
-    isString: {
-      errorMessage: "url tidak valid"
-    },
+    isURL: {
+      options: {
+        protocols: ['http', 'https'],
+        require_protocol: true,
+        require_tld: false
+      },
+      errorMessage: "URL tidak valid"
+    }
   }
 }), {
   locations: ['body'],

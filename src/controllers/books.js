@@ -82,25 +82,8 @@ const updateBook = async (req, res, next) => {
   console.log('UPDATE BOOK CONTROLLER HIT');
   const { id } = req.params;
   const updates = req.body;
-  const allowedFields = [
-    'code',
-    'title',
-    'author',
-    'publisher',
-    'published_year',
-    'synopsis',
-    'total_copies',
-    'cover_url'
-  ];
-  const invalidFields = Object.keys(updates).filter((key) => !allowedFields.includes(key));
-  if (invalidFields.length > 0) {
-    return res.status(400).json({
-      status: 'fail',
-      message: `Field ${invalidFields.join(', ')} tidak diizinkan`
-    });
-  }
 
-  const keys = Object.keys(updates).filter(key => allowedFields.includes(key));
+  const keys = Object.keys(updates);
 
   if (keys.length === 0) {
     return res.status(400).json({

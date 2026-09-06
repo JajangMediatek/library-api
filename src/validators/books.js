@@ -1,6 +1,6 @@
-const { checkSchema, body } = require("express-validator");
+const { checkSchema, body, checkExact } = require("express-validator");
 
-const createBookValidation = checkSchema({
+const createBookValidation =checkExact(checkSchema({
   code: {
     trim: true,
     isString: {
@@ -78,9 +78,12 @@ const createBookValidation = checkSchema({
     },
   }
 
+}), {
+  locations: ['body'],
+  message: "Terdapat Field yang tidak diizinkan"
 });
 
-const updateBookValidation = checkSchema({
+const updateBookValidation = checkExact(checkSchema({
   code: {
     trim: true,
     isString: {
@@ -145,6 +148,9 @@ const updateBookValidation = checkSchema({
       errorMessage: "url tidak valid"
     },
   }
+}), {
+  locations: ['body'],
+  message: "Terdapat Field yang tidak diizinkan"
 });
 
 module.exports = { createBookValidation, updateBookValidation };

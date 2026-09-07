@@ -9,10 +9,7 @@ const getBooks = async (req, res) => {
       data: books.rows
     })
   } catch (err) {
-    res.status(500).json({
-      status: 'fail',
-      message: err.message
-    });
+    next(err)
   }
 };
 
@@ -34,10 +31,7 @@ const getBookById = async (req, res) => {
       data : result.rows[0]
     });
   } catch (err) {
-    res.status(500).json({
-      status: 'fail',
-      message: err.message
-    });
+    next(err)
   }
 }
 
@@ -71,10 +65,7 @@ const createBook = async (req, res) => {
         message: `kode buku '${req.body.code}' telah digunakan`
       });
     }
-    return res.status(400).json({
-      status: 'fail',
-      message: error.message
-    });
+    next(error)
   }
 }
 
@@ -142,10 +133,7 @@ const deleteBook = async (req, res) => {
       message: 'Buku berhasil dihapus'
     })
   } catch (error) {
-    res.status(500).json({
-      status: 'fail',
-      message: error.message
-    });
+    next(error)
   }
 };
 

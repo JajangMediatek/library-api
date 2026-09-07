@@ -7,8 +7,7 @@ const port = 3000;
 
 app.use(express.json());
 app.use('/books', booksRouter);
-app.use(errorHandler
-)
+app.use(errorHandler)
 app.listen(port, () =>
   console.log(`listening on port ${port}`)
 );

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bookController = require('../controllers/books');
 const { createBookValidation, updateBookValidation } = require('../validators/books');
-const validate = require('../validators/validate');
+const validate = require('../middleware/validate');
 
 router.param('id', (req, res, next, id) => {
   const numericId = parseInt(id, 10);

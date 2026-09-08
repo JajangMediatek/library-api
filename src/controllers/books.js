@@ -1,6 +1,6 @@
 const pool = require("../db");
 
-const getBooks = async (req, res) => {
+const getBooks = async (req, res, next) => {
   try {
     const books = await pool.query('SELECT * FROM books');
 
@@ -13,7 +13,7 @@ const getBooks = async (req, res) => {
   }
 };
 
-const getBookById = async (req, res) => {
+const getBookById = async (req, res, next) => {
   try {
     const result = await pool.query(`SELECT * FROM books where id = $1`,
       [req.params.id]
@@ -35,7 +35,7 @@ const getBookById = async (req, res) => {
   }
 }
 
-const createBook = async (req, res) => {
+const createBook = async (req, res, next) => {
   try {
     const {code, title, author, publisher, published_year, synopsis, total_copies, cover_url
     } = req.body;
@@ -87,6 +87,7 @@ const updateBook = async (req, res, next) => {
   const idPosition = values.length;
 
   const query = `UPDATE books SET ${setClauses.join(',')} WHERE id = $${idPosition} RETURNING *`;
+  console.log(query)
   try {
     const { rows } = await pool.query(query, values);
 
@@ -113,7 +114,7 @@ const updateBook = async (req, res, next) => {
   }
 };
 
-const deleteBook = async (req, res) => {
+const deleteBook = async (req, res, next) => {
   const {id} = req.params;
   try {
     const { rows } = await pool.query('DELETE FROM books where id = $1 RETURNING *', [id]);

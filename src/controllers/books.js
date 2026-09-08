@@ -36,7 +36,6 @@ const getBookById = async (req, res) => {
 }
 
 const createBook = async (req, res) => {
-    console.log("CREATE BOOK CONTROLLER HIT")
   try {
     const {code, title, author, publisher, published_year, synopsis, total_copies, cover_url
     } = req.body;
@@ -70,7 +69,6 @@ const createBook = async (req, res) => {
 }
 
 const updateBook = async (req, res, next) => {
-  console.log('UPDATE BOOK CONTROLLER HIT');
   const { id } = req.params;
   const updates = req.body;
 
@@ -116,7 +114,6 @@ const updateBook = async (req, res, next) => {
 };
 
 const deleteBook = async (req, res) => {
-  console.log('DELETE BOOK CONTROLLER HIT');
   const {id} = req.params;
   try {
     const { rows } = await pool.query('DELETE FROM books where id = $1 RETURNING *', [id]);

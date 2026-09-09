@@ -1,4 +1,5 @@
 const pool = require("../db");
+const bookModel = require('../models/books');
 
 const getBooks = async (req, res, next) => {
   try {
@@ -14,12 +15,11 @@ const getBooks = async (req, res, next) => {
 };
 
 const getBookById = async (req, res, next) => {
+  const { id } = req.params;
   try {
-    const result = await pool.query(`SELECT * FROM books where id = $1`,
-      [req.params.id]
-    );
+    const result = await bookModel.getBookById(id);
 
-    if (result.rows.length === 0) {
+    if (!result) {
       return res.status(404).json({
         status: 'fail',
         message: 'Buku Tidak ditemukan'
@@ -28,7 +28,7 @@ const getBookById = async (req, res, next) => {
 
     res.json({
       status: 'success',
-      data : result.rows[0]
+      data : result
     });
   } catch (err) {
     next(err)

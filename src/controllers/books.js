@@ -1,13 +1,14 @@
+const { matchedData } = require("express-validator");
 const pool = require("../db");
 const bookModel = require('../models/books');
 
 const getBooks = async (req, res, next) => {
   try {
-    const books = await pool.query('SELECT * FROM books');
+    const books = await bookModel.getBook();
 
     return res.json({
       status: 'success',
-      data: books.rows
+      data: books
     })
   } catch (err) {
     next(err)
@@ -39,23 +40,13 @@ const createBook = async (req, res, next) => {
   try {
     const {code, title, author, publisher, published_year, synopsis, total_copies, cover_url
     } = req.body;
-    const result = await pool.query(`INSERT INTO books(
-    code,
-    title,
-    author,
-    publisher,
-    published_year,
-    synopsis,
-    total_copies,
-    cover_url)
-    VALUES($1, $2, $3, $4, $5, $6, $7, $8)
-    RETURNING *;`,
-    [code, title, author, publisher, published_year, synopsis, total_copies, cover_url]);
+
+    const result = await bookModel.createBook(code, title, author, publisher, published_year, synopsis, total_copies, cover_url);
 
     return res.status(201).json({
       status: 'success',
       message: 'Buku berhasil ditambahkan',
-      data: result.rows[0]
+      data: result
     });
   } catch (error) {
     if (error.code === '23505') {
@@ -70,28 +61,18 @@ const createBook = async (req, res, next) => {
 
 const updateBook = async (req, res, next) => {
   const { id } = req.params;
-  const updates = req.body;
+  const updates = matchedData(req, {locations: ['body'] });
 
-  const keys = Object.keys(updates);
-
-  if (keys.length === 0) {
+  if (Object.keys(updates).length === 0) {
     return res.status(400).json({
       status: 'fail',
-      message: 'tidak ada data yang dikirim untuk diperbarui.'
-    })
+      message: 'Tidak ada data valid untuk di-update.'
+    });
   }
-
-  const setClauses = keys.map((key, index) => `${key} = $${index + 1}`);
-  const values = Object.values(updates);
-  values.push(id);
-  const idPosition = values.length;
-
-  const query = `UPDATE books SET ${setClauses.join(',')} WHERE id = $${idPosition} RETURNING *`;
-  console.log(query)
   try {
-    const { rows } = await pool.query(query, values);
+    const updateBook = await bookModel.updateBook(updates, id);
 
-    if (rows.length === 0) {
+    if (!updateBook) {
       return res.status(404).json({
         status: 'fail',
         message: 'Buku tidak ditemukan'
@@ -101,7 +82,7 @@ const updateBook = async (req, res, next) => {
     return res.status(200).json({
       status: 'success',
       message: 'Buku berhasil diperbarui',
-      data: rows[0],
+      data: updateBook,
     })
   } catch (error) {
     if (error.code === '23505') {
@@ -117,9 +98,9 @@ const updateBook = async (req, res, next) => {
 const deleteBook = async (req, res, next) => {
   const {id} = req.params;
   try {
-    const { rows } = await pool.query('DELETE FROM books where id = $1 RETURNING *', [id]);
+    const result = await bookModel.deleteBook(id);
 
-    if (rows.length === 0) {
+    if (!result) {
       return res.status(404).json({
         status: 'fail',
         message: 'Buku tidak ditemukan'

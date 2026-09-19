@@ -1,6 +1,6 @@
 const { checkSchema, body, checkExact } = require("express-validator");
 
-const createBookValidation =checkExact(checkSchema({
+const createBookValidation = checkExact(checkSchema({
   code: {
     custom: {
       options: (value) => {
@@ -35,7 +35,7 @@ const createBookValidation =checkExact(checkSchema({
         if (typeof value !== 'string') {
           throw new Error('Field author harus berupa string')
         }
-          return true;
+        return true;
       }
     },
     trim: true,
@@ -53,8 +53,8 @@ const createBookValidation =checkExact(checkSchema({
       }
     },
     trim: true,
-      notEmpty: {
-        errorMessage: "Field publisher wajib diisi"
+    notEmpty: {
+      errorMessage: "Field publisher wajib diisi"
     }
   },
   published_year: {
@@ -63,7 +63,7 @@ const createBookValidation =checkExact(checkSchema({
       errorMessage: "Tahun tidak valid"
     },
     notEmpty: {
-        errorMessage: "Field tahun rilis wajib diisi"
+      errorMessage: "Field tahun rilis wajib diisi"
     },
     custom: {
       options: (value) => {
@@ -106,8 +106,21 @@ const createBookValidation =checkExact(checkSchema({
       },
       errorMessage: "URL tidak valid"
     }
-  }
-
+  },
+  tag_ids: {
+    optional: true,
+    isArray: {
+      errorMessage: 'tags_id harus berupa array'
+    },
+  },
+  'tag_ids.*': {
+    isInt: {
+      options: {
+        min: 0
+      },
+      errorMessage: 'tags_id tidak valid'
+    }
+  },
 }), {
   message: "Terdapat Field yang tidak diizinkan",
   locations: ['body'],
@@ -160,7 +173,7 @@ const updateBookValidation = checkExact(checkSchema({
       }
     },
     trim: true,
-      optional: true
+    optional: true
   },
   published_year: {
     isInt: {

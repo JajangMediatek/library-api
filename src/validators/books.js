@@ -116,7 +116,7 @@ const createBookValidation = checkExact(checkSchema({
   'tag_ids.*': {
     isInt: {
       options: {
-        min: 0
+        min: 1
       },
       errorMessage: 'tags_id tidak valid'
     }

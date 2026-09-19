@@ -39,22 +39,45 @@ const getBookById = async (id) => {
   return rows[0]
 }
 
-const createBook = async (code, title, author, publisher, published_year, synopsis, total_copies, cover_url) => {
-  const query = `INSERT INTO books(
-  code,
-  title,
-  author,
-  publisher,
-  published_year,
-  synopsis,
-  total_copies,
-  cover_url)
-  VALUES($1, $2, $3, $4, $5, $6, $7, $8)
-  RETURNING *;`;
+const createBook = async (data) => {
+  const { tag_ids = [], ...bookData } = data;
+  const client = await pool.connect();
 
-  const { rows } = await pool.query(query, [code, title, author, publisher, published_year, synopsis, total_copies, cover_url]);
-  return rows[0];
-}
+  try {
+    await client.query('BEGIN');
+
+    const insertBookQuery = `INSERT INTO books(code, title, author, publisher, published_year, synopsis, total_copies, cover_url) values($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`;
+    const bookParams = [
+      bookData.code,
+      bookData.title,
+      bookData.author,
+      bookData.publisher,
+      bookData.published_year,
+      bookData.synopsis,
+      bookData.total_copies,
+      bookData.cover_url
+    ];
+
+    const bookResult = await client.query(insertBookQuery, bookParams);
+    const bookId = bookResult.rows[0].id;
+
+    if (tag_ids.length > 0) {
+      const values = tag_ids.map((_, index) => `($1, $${index + 2})`).join(', ');
+      const insertTagsQuery = `INSERT INTO book_tags(book_id, tag_id) VALUES ${values}`;
+      const tagParams = [bookId, ...tag_ids];
+
+      await client.query(insertTagsQuery, tagParams);
+    }
+
+    await client.query('COMMIT')
+    return await getBookById(bookId);
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
+};
 
 const updateBook = async (updates, id) => {
   const keys = Object.keys(updates);

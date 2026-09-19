@@ -29,7 +29,7 @@ const getBookById = async (req, res, next) => {
 
     res.json({
       status: 'success',
-      data : result
+      data: result
     });
   } catch (err) {
     next(err)
@@ -38,11 +38,9 @@ const getBookById = async (req, res, next) => {
 
 const createBook = async (req, res, next) => {
   try {
-    const {code, title, author, publisher, published_year, synopsis, total_copies, cover_url
-    } = req.body;
-
-    const result = await bookModel.createBook(code, title, author, publisher, published_year, synopsis, total_copies, cover_url);
-
+    const data = matchedData(req, { locations: ['body'] });
+    console.log(data);
+    const result = await bookModel.createBook(data);
     return res.status(201).json({
       status: 'success',
       message: 'Buku berhasil ditambahkan',
@@ -61,8 +59,8 @@ const createBook = async (req, res, next) => {
 
 const updateBook = async (req, res, next) => {
   const { id } = req.params;
-  const updates = matchedData(req, {locations: ['body'] });
-
+  const updates = matchedData(req, { locations: ['body'] });
+  console.log(updates);
   if (Object.keys(updates).length === 0) {
     return res.status(400).json({
       status: 'fail',
@@ -96,7 +94,7 @@ const updateBook = async (req, res, next) => {
 };
 
 const deleteBook = async (req, res, next) => {
-  const {id} = req.params;
+  const { id } = req.params;
   try {
     const result = await bookModel.deleteBook(id);
 

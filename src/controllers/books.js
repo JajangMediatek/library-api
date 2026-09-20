@@ -1,5 +1,4 @@
 const { matchedData } = require("express-validator");
-const pool = require("../db");
 const bookModel = require('../models/books');
 
 const getBooks = async (req, res, next) => {
@@ -39,8 +38,8 @@ const getBookById = async (req, res, next) => {
 const createBook = async (req, res, next) => {
   try {
     const data = matchedData(req, { locations: ['body'] });
-    console.log(data);
     const result = await bookModel.createBook(data);
+
     return res.status(201).json({
       status: 'success',
       message: 'Buku berhasil ditambahkan',
@@ -60,7 +59,7 @@ const createBook = async (req, res, next) => {
 const updateBook = async (req, res, next) => {
   const { id } = req.params;
   const updates = matchedData(req, { locations: ['body'] });
-  console.log(updates);
+
   if (Object.keys(updates).length === 0) {
     return res.status(400).json({
       status: 'fail',

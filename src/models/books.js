@@ -80,16 +80,41 @@ const createBook = async (data) => {
 };
 
 const updateBook = async (updates, id) => {
-  const keys = Object.keys(updates);
-  const setClauses = keys.map((key, index) => `${key} = $${index + 1}`).join(', ');
+  const { tag_ids, ...bookData } = updates;
+  const client = await pool.connect();
 
-  const values = Object.values(updates);
-  values.push(id);
-  const idPosition = values.length;
-  const query = `UPDATE books SET ${setClauses} WHERE id = $${idPosition} RETURNING *`;
+  try {
+    await client.query('BEGIN')
 
-  const { rows } = await pool.query(query, values);
-  return rows[0];
+    const keys = Object.keys(bookData);
+    if (keys.length > 0) {
+      const setClauses = keys.map((key, index) => `${key} = $${index + 1}`).join(', ');
+      const values = [...Object.values(bookData), id];
+      const query = `UPDATE books SET ${setClauses} WHERE id = $${values.length}`;
+
+      await client.query(query, values)
+    }
+
+    if (tag_ids !== undefined) {
+      await client.query('DELETE FROM book_tags WHERE book_id = $1', [id])
+      if (Array.isArray(tag_ids) && tag_ids.length > 0) {
+
+        const values = tag_ids.map((_, index) => `($1, $${index + 2})`).join(', ');
+        const tagQuery = `INSERT INTO book_tags(book_id, tag_id) VALUES${values}`;
+        const tagParams = [id, ...tag_ids]
+        await client.query(tagQuery, tagParams);
+      }
+
+    }
+
+    await client.query('COMMIT')
+    return getBookById(id)
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
 }
 
 const deleteBook = async (id) => {

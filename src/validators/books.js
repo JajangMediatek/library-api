@@ -220,7 +220,22 @@ const updateBookValidation = checkExact(checkSchema({
       },
       errorMessage: "URL tidak valid"
     }
-  }
+  },
+  tag_ids: {
+    optional: true,
+    isArray: {
+      errorMessage: 'tags_id harus berupa array'
+    },
+  },
+  'tag_ids.*': {
+    optional: true,
+    isInt: {
+      options: {
+        min: 1
+      },
+      errorMessage: 'tags_id tidak valid'
+    }
+  },
 }), {
   locations: ['body'],
   message: "Terdapat Field yang tidak diizinkan"

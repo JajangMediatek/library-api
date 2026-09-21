@@ -88,6 +88,12 @@ const updateBook = async (req, res, next) => {
         message: 'kode buku yang dimasukkan sudah digunakan'
       })
     }
+    if (error.code === '23503') {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'Salah satu tag tidak ditemukan'
+      })
+    }
     next(error);
   }
 };

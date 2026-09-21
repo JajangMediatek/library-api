@@ -90,11 +90,14 @@ const updateBook = async (updates, id) => {
     if (keys.length > 0) {
       const setClauses = keys.map((key, index) => `${key} = $${index + 1}`).join(', ');
       const values = [...Object.values(bookData), id];
-      const query = `UPDATE books SET ${setClauses} WHERE id = $${values.length}`;
+      const query = `UPDATE books SET ${setClauses} WHERE id = $${values.length} RETURNING *`;
 
-      await client.query(query, values)
+      const { rows } = await client.query(query, values);
+
+      if (rows.length === 0) {
+        throw new Error;
+      }
     }
-
     if (tag_ids !== undefined) {
       await client.query('DELETE FROM book_tags WHERE book_id = $1', [id])
       if (Array.isArray(tag_ids) && tag_ids.length > 0) {
@@ -108,6 +111,7 @@ const updateBook = async (updates, id) => {
     }
 
     await client.query('COMMIT')
+    console.log('test')
     return getBookById(id)
   } catch (error) {
     await client.query('ROLLBACK');

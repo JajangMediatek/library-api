@@ -1,6 +1,6 @@
 const pool = require("../db");
 
-const getBook = async () => {
+const getBooks = async () => {
   const query = `SELECT
             books.*,
             json_agg(
@@ -127,4 +127,4 @@ const deleteBook = async (id) => {
   return rows[0];
 };
 
-module.exports = { getBookById, getBook, createBook, updateBook, deleteBook }
+module.exports = { getBookById, getBooks, createBook, updateBook, deleteBook }

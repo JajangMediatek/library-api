@@ -1,5 +1,4 @@
-const pool = require("../db");
-const tagModel = require("../models/tags.js")
+const tagModel = require("../models/Tag")
 
 const getTags = async (req, res, next) => {
   try {

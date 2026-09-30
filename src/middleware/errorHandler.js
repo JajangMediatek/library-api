@@ -1,4 +1,4 @@
-export const errorHandler = (err, req, res, next) => {
+const errorHandler = (err, req, res, next) => {
   console.log('[SERVER ERROR]:', err);
   const statusCode = err.statusCode || 500;
   const message = err.message || 'Terjadi kesalahan pada server';
@@ -15,3 +15,5 @@ export const errorHandler = (err, req, res, next) => {
     message: message
   })
 }
+
+module.exports = errorHandler;

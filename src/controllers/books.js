@@ -1,9 +1,9 @@
 const { matchedData } = require("express-validator");
-const bookModel = require('../models/books');
+const bookModel = require('../models/Book');
 
 const getBooks = async (req, res, next) => {
   try {
-    const books = await bookModel.getBook();
+    const books = await bookModel.getBooks();
 
     return res.json({
       status: 'success',

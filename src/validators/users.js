@@ -17,7 +17,9 @@ const createUserValidation = checkExact(checkSchema({
     },
   },
   email: {
-    isEmail: true,
+    isEmail: {
+      errorMessage: 'Email tidak valid'
+    },
     trim: true,
     notEmpty: {
       errorMessage: 'Field email wajib diisi'

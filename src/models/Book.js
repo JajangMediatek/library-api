@@ -95,7 +95,7 @@ const updateBook = async (updates, id) => {
       const { rows } = await client.query(query, values);
 
       if (rows.length === 0) {
-        throw new Error;
+        return null;
       }
     }
     if (tag_ids !== undefined) {
@@ -111,7 +111,6 @@ const updateBook = async (updates, id) => {
     }
 
     await client.query('COMMIT')
-    console.log('test')
     return getBookById(id)
   } catch (error) {
     await client.query('ROLLBACK');

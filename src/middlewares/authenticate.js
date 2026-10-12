@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
+const { getUsertWithRole } = require('../models/User.js')
 
-const authenticate = (req, res, next) => {
+const authenticate = async (req, res, next) => {
   const authHeader = req.get('authorization');
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -28,8 +29,19 @@ const authenticate = (req, res, next) => {
       algorithms: ['HS256'],
     });
 
+    const user = await getUsertWithRole(payload.sub);
+
+    if (!user) {
+      return res.status(401).json({
+        status: 'fail',
+        message: 'User pemilik token sudah tidak ditemukan'
+      })
+    }
+
     req.user = {
-      id: payload.sub,
+      id: user.id,
+      username: user.username,
+      roles: user.roles
     };
 
     return next();

@@ -23,5 +23,20 @@ const findUserByIdentifier = async (identifier) => {
   return rows[0] ?? null;
 }
 
+const getUsertWithRole = async (id) => {
+  const query = `SELECT u.id, u.username, COALESCE(
+                    array_agg(r.name) FILTER (WHERE r.id IS NOT NULL),
+                    ARRAY[]::varchar[]
+                  ) AS roles
+                  FROM users u
+                  LEFT JOIN user_roles ur ON ur.user_id = u.id
+                  LEFT JOIN roles r ON r.id = ur.role_id
+                  WHERE u.id = $1
+                  GROUP BY u.id, u.username;`;
 
-module.exports = { createUser, findUserByIdentifier };
+  const { rows } = await pool.query(query, [id])
+
+  return rows[0]
+}
+
+module.exports = { createUser, findUserByIdentifier, getUsertWithRole };

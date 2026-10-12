@@ -2,6 +2,8 @@ const express = require('express');
 const userController = require('../controllers/users.js');
 const validate = require('../middlewares/validate.js');
 const { createUserValidation } = require('../validators/users.js');
+const authenticate = require('../middlewares/authenticate.js');
+const authorize = require('../middlewares/authorize.js');
 const router = express.Router();
 
 router.param('id', (req, res, next, id) => {
@@ -19,6 +21,6 @@ router.param('id', (req, res, next, id) => {
 });
 
 
-router.post('/', createUserValidation, validate, userController.createUser)
+router.post('/', authenticate, authorize('admin'), createUserValidation, validate, userController.createUser)
 
 module.exports = router;

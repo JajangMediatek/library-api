@@ -4,6 +4,7 @@ const bookController = require('../controllers/books');
 const { createBookValidation, updateBookValidation } = require('../validators/books');
 const validate = require('../middlewares/validate.js');
 const authenticate = require('../middlewares/authenticate.js');
+const authorize = require('../middlewares/authorize.js');
 
 router.param('id', (req, res, next, id) => {
   const numericId = parseInt(id, 10);
@@ -22,8 +23,8 @@ router.param('id', (req, res, next, id) => {
 
 router.get('/', bookController.getBooks);
 router.get('/:id', bookController.getBookById);
-router.post('/', authenticate, createBookValidation, validate, bookController.createBook);
-router.patch('/:id', authenticate, updateBookValidation, validate, bookController.updateBook);
-router.delete('/:id', authenticate, bookController.deleteBook);
+router.post('/', authenticate, authorize('admin'), createBookValidation, validate, bookController.createBook);
+router.patch('/:id', authenticate, authorize('admin'), updateBookValidation, validate, bookController.updateBook);
+router.delete('/:id', authenticate, authorize('admin'), bookController.deleteBook);
 
 module.exports = router;

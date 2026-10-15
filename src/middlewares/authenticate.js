@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { getUsertWithRole } = require('../models/User.js')
+const { getUsertWithRoles } = require('../models/User.js')
 
 const authenticate = async (req, res, next) => {
   const authHeader = req.get('authorization');
@@ -29,7 +29,7 @@ const authenticate = async (req, res, next) => {
       algorithms: ['HS256'],
     });
 
-    const user = await getUsertWithRole(payload.sub);
+    const user = await getUsertWithRoles(payload.sub);
 
     if (!user) {
       return res.status(401).json({

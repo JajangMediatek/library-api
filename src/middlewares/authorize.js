@@ -1,11 +1,18 @@
 const authorize = (...allowedRoles) => {
   return (req, res, next) => {
 
-    if (!req.user || !Array.isArray(req.user.roles)) {
+    if (!req.user) {
+      return res.status(401).json({
+        status: 'fail',
+        message: 'Autentikasi diperlukan'
+      });
+    }
+
+    if (!Array.isArray(req.user.roles)) {
       return res.status(403).json({
         status: 'fail',
-        message: 'Akses ditolak, informasi role tidak ditemukan'
-      });
+        message: 'Informasi role tidak ditemukan'
+      })
     }
 
     const hasPermission = allowedRoles.some((role) => req.user.roles.includes(role));

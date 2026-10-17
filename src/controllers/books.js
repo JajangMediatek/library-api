@@ -52,6 +52,13 @@ const createBook = async (req, res, next) => {
         message: `kode buku '${req.body.code}' telah digunakan`
       });
     }
+    if (error.code === 'INVALID_TAG_IDS') {
+      return res.status(400).json({
+        status: 'fail',
+        message: error.message,
+        data: error.invalidIds
+      })
+    }
     next(error)
   }
 }

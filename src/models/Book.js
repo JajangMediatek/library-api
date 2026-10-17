@@ -1,4 +1,5 @@
 const pool = require("../db");
+const { getInvalidTags } = require("./Tag");
 
 const getBooks = async () => {
   const query = `SELECT
@@ -13,7 +14,8 @@ const getBooks = async () => {
         LEFT JOIN book_tags
             ON books.id = book_tags.book_id
         LEFT JOIN tags
-            ON book_tags.tag_id = tags.id
+            ON book_tags.tag_id = tags.id AND tags.is_active = TRUE
+        WHERE books.is_active = true
         GROUP BY books.id;`;
   const { rows } = await pool.query(query);
   return rows;
@@ -33,7 +35,7 @@ const getBookById = async (id) => {
             ON books.id = book_tags.book_id
         LEFT JOIN tags
             ON book_tags.tag_id = tags.id
-        WHERE books.id = $1
+        WHERE books.id = $1 AND books.is_active = TRUE
         GROUP BY books.id;`;
   const { rows } = await pool.query(query, [id]);
   return rows[0]
@@ -42,9 +44,16 @@ const getBookById = async (id) => {
 const createBook = async (data) => {
   const { tag_ids = [], ...bookData } = data;
   const client = await pool.connect();
-
   try {
     await client.query('BEGIN');
+
+    const invalidIds = await getInvalidTags(tag_ids, client);
+    if (invalidIds.length > 0) {
+      const error = new Error('Terdapat tag yang tidak valid atau tidak aktif');
+      error.code = 'INVALID_TAG_IDS';
+      error.invalidIds = invalidIds;
+      throw error;
+    }
 
     const insertBookQuery = `INSERT INTO books(code, title, author, publisher, published_year, synopsis, total_copies, cover_url) values($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`;
     const bookParams = [
@@ -86,6 +95,14 @@ const updateBook = async (updates, id) => {
   try {
     await client.query('BEGIN')
 
+    const invalidIds = await getInvalidTags(tag_ids, client);
+    if (invalidIds.length > 0) {
+      const error = new Error('Terdapat tag yang tidak valid atau tidak aktif');
+      error.code = 'INVALID_TAG_IDS';
+      error.invalidIds = invalidIds;
+      throw error;
+    }
+
     const keys = Object.keys(bookData);
     if (keys.length > 0) {
       const setClauses = keys.map((key, index) => `${key} = $${index + 1}`).join(', ');
@@ -121,7 +138,7 @@ const updateBook = async (updates, id) => {
 }
 
 const deleteBook = async (id) => {
-  const query = 'DELETE FROM books where id = $1 RETURNING *';
+  const query = 'UPDATE books SET is_active = FALSE where id = $1 AND is_active = TRUE RETURNING id, code, title, is_active';
   const { rows } = await pool.query(query, [id]);
   return rows[0];
 };

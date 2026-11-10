@@ -8,7 +8,7 @@ const authorize = require('../middlewares/authorize.js');
 
 
 router.get('/', BookCopyController.getBookCopies);
-router.post('/', authenticate, authorize('admin'), createBookCopyValidation, BookCopyController.createBookCopy);
-router.patch('/:id', authenticate, authorize('admin'), updateBookCopyValidation, BookCopyController.updateBookCopy);
+router.post('/', authenticate, authorize('admin'), createBookCopyValidation, validate, BookCopyController.createBookCopy);
+router.patch('/:id', authenticate, authorize('admin'), updateBookCopyValidation, validate, BookCopyController.updateBookCopy);
 
 module.exports = router;

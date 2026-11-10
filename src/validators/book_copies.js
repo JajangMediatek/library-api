@@ -1,6 +1,6 @@
 const { checkExact, checkSchema } = require('express-validator')
 
-const createBookCopy = checkExact(checkSchema({
+const createBookCopyValidation = checkExact(checkSchema({
   book_id: {
     notEmpty: {
       errorMessage: 'Field id buku wajib diisi'
@@ -50,7 +50,7 @@ const createBookCopy = checkExact(checkSchema({
       errorMessage: 'Field status wajib diisi'
     },
     isIn: {
-      options: [['avaible', 'maintenance', 'lost', 'retired']],
+      options: [['available', 'maintenance', 'lost', 'retired']],
       errorMessage: 'Status tidak valid, pilih yang tersedia'
     },
   }
@@ -60,7 +60,7 @@ const createBookCopy = checkExact(checkSchema({
 })
 
 
-const updateBookCopy = checkExact(checkSchema({
+const updateBookCopyValidation = checkExact(checkSchema({
   copy_code: {
     optional: true,
     custom: {
@@ -95,7 +95,7 @@ const updateBookCopy = checkExact(checkSchema({
   status: {
     optional: true,
     isIn: {
-      options: [['avaible', 'maintenance', 'lost', 'retired']],
+      options: [['available', 'maintenance', 'lost', 'retired']],
       errorMessage: 'Status tidak valid, pilih yang tersedia'
     },
   }
@@ -105,4 +105,4 @@ const updateBookCopy = checkExact(checkSchema({
 })
 
 
-module.exports = { createBookCopy, updateBookCopy };
+module.exports = { createBookCopyValidation, updateBookCopyValidation };

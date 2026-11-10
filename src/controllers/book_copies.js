@@ -36,7 +36,7 @@ const createBookCopy = async (req, res, next) => {
       });
     }
     if (error.code === 'INVALID_BOOK_ID') {
-      res.status(400).json({
+      return res.status(400).json({
         status: 'fail',
         message: error.message,
       })

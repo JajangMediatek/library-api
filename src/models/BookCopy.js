@@ -2,8 +2,7 @@ const pool = require('../db');
 
 const getBookCopies = async (bookId) => {
   const query = `SELECT id, book_id, copy_code, condition, condition_notes, status
-                  FROM book_copies WHERE book_id = $1 AND status = 'available'
-                  RETURNING id, book_id, copy_code, condition, condition_notes, status`;
+                  FROM book_copies WHERE book_id = $1 AND status = 'available'`;
 
   const { rows } = await pool.query(query, [bookId]);
 
